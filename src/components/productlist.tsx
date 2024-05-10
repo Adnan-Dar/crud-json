@@ -4,8 +4,30 @@ import { useState, useEffect } from "react";
 import Removebutton from "@/components/removebutton";
 import Editproductform from "@/components/editproduct";
 import Addproduct from "@/components/addproduct";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Productlist() {
+  const rowperpage = 10;
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(rowperpage);
+
   const [products, setProducts] = useState<any[]>([]);
 
   useEffect(() => {
@@ -84,7 +106,7 @@ export default function Productlist() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product: any) => (
+          {products.slice(startIndex, endIndex).map((product: any) => (
             <tr className="hover" key={product._id}>
               <td>
                 <label>
@@ -112,7 +134,7 @@ export default function Productlist() {
                     <div className="drawer-content">
                       <label
                         htmlFor={`edit-drawer-${product._id}`}
-                        className="drawer-button btn btn-primary"
+                        className="drawer-button w-20 btn btn-primary"
                       >
                         Edit
                       </label>
@@ -144,13 +166,40 @@ export default function Productlist() {
           ))}
         </tbody>
       </table>
-      {/* <div className="join flex justify-end">
-  <button className="join-item btn">1</button>
-  <button className="join-item btn">2</button>
-  <button className="join-item btn btn-disabled">...</button>
-  <button className="join-item btn">99</button>
-  <button className="join-item btn">100</button>
-</div> */}
-    </div>
+     
+      <Pagination className=" border">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              className={startIndex === 0 ? "pointer-events-none  " : undefined}
+              onClick={() => {
+                setStartIndex(startIndex - rowperpage);
+                setEndIndex(endIndex - rowperpage);
+              }}
+            />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">1</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              className={
+                endIndex >= products.length ? "pointer-events-none bg-inherit" : undefined
+              }
+              onClick={() => {
+                setStartIndex(startIndex + rowperpage);
+                setEndIndex(endIndex + rowperpage);
+              }}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+      </div>
+   
   );
 }
